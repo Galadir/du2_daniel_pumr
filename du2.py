@@ -56,7 +56,7 @@ def sector_edges(sector,le,re,be,te):
     return S_le,S_re,S_be,S_te
 
 
-def sectors(soubor,sec,le,re,be,te):
+def sectors(soubor,le,re,be,te):
     """
     Funkce přiřadí bodům do properties atribut cluster_id podle too v jakém sektoru se nachází
     :param soubor:nahraná data z geoJSON
@@ -71,7 +71,7 @@ def sectors(soubor,sec,le,re,be,te):
     cy = (be+te)/2
 
 
-    for i in range(len(soubor['features'])):
+    for i in soubor['features']:
         if i["geometry"]["coordinates"][0] < cx and i["geometry"]["coordinates"][1] > cy:
             i["properties"]["cluster_id"] += 'A'
             sectorA.append(i)
@@ -84,6 +84,11 @@ def sectors(soubor,sec,le,re,be,te):
         elif i["geometry"]["coordinates"][0] > cx and i["geometry"]["coordinates"][1] < cy:
             i["properties"]["cluster_id"] += 'D'
             sectorD.append(i)
+
+    print(sectorA)
+    print(sectorB)
+    print(sectorC)
+    print(sectorD)
 
     if len(sectorA)>10:
         S_e=sector_edges('A',le,re,be,te)
@@ -102,16 +107,19 @@ def sectors(soubor,sec,le,re,be,te):
 for i in soubor['features']:
     i["properties"]["cluster_id"] = ''
 
-sector_calc=[]
-for i in soubor['features']:
-    sector_calc.append(i)
-    print(sector_calc)
+# sector_calc=[]
+# for i in soubor['features']:
+#     sector_calc.append(i)
+#     print(sector_calc)
+
+sec= range(len(soubor['features']))
+print(sec)
 
 e=edges(soubor)
-sectors(soubor,sector_calc,e[0],e[1],e[2],e[3])
+sectors(soubor,e[0],e[1],e[2],e[3])
 
 
-features = soubor['features']
+features = soubor['features'][1]
 print(features)
 
 
