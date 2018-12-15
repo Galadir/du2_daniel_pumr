@@ -3,8 +3,13 @@ import json
 with open("drinking_water.geojson",encoding="utf-8") as f:
     soubor = json.load(f)
 
+# print(type(soubor)) #zjistím o jaký se jedný typ → dic= slovník
+# for k in soubor: #chci zjistit jaké jsou klíče
+#    print(k)
+
 souradnice=[]
 features = soubor['features']
+print(features)
 for i in features:
     geo = i["geometry"]
     coord = geo["coordinates"]
@@ -35,7 +40,15 @@ def edges(souradnice):
 
     return(left_edge,right_edge,bottom_edge,top_edge,center_X,center_Y)
 
-ans=edges(souradnice)
-print(ans)
+# ans=edges(souradnice)
+# print(ans)
+
+for i in soubor['features']:
+    i["properties"]["cluster_id"] = 1
+
+features = soubor['features']
+print(features)
 
 
+with open('drinking_water_pokus.geojson', mode = 'w',encoding='UTF-8') as f:
+    json.dump(soubor,f)
