@@ -109,10 +109,18 @@ def sectors(soubor,sec,le,re,be,te):
 
 @click.command()
 @click.argument('input', type=click.File('rb'))
-@click.argument('output', default='out.geojson')
+@click.argument('output', default='output.geojson')
 
-def init(input,output):
-    soubor = json.load(input)
+def run(input,output):
+    if '.geojson' not in output:
+        print('Error: Output file was not set as geoJSON')
+        exit(2)
+    try:
+        soubor = json.load(input)
+    except json.decoder.JSONDecodeError:
+        print('Error: Input file is probably not JSON')
+        exit(1)
+
     for i in soubor['features']:
         i["properties"]["cluster_id"] = ''
     sec = range(len(soubor['features']))
@@ -123,8 +131,10 @@ def init(input,output):
     with open(output, mode='w', encoding='UTF-8') as f:
         json.dump(soubor, f)
 
-if __name__ == '__main__':
-    init()
+
+#if __name__ == '__main__':
+run()
+
 
 
 # with open('restaurant_pokus3.geojson', mode = 'w',encoding='UTF-8') as f:
