@@ -1,15 +1,11 @@
 import json
 import click
 
-# with open("restaurant.geojson",encoding="utf-8") as f:
-#     soubor = json.load(f)
-
-
 def edges(soubor):
     """
     Funkce vytvoří ze souřadnic okraje bboxu
     :param soubor: nahraná data z geoJSON
-    :return: množina krajních bodů (left,right, bottom, top, centerX,centerY)
+    :return: množina krajních bodů (left,right,bottom,top)
     """
 
     souradnice = []
@@ -34,6 +30,15 @@ def edges(soubor):
     return left_edge,right_edge,bottom_edge,top_edge
 
 def sector_edges(sector,le,re,be,te):
+    """
+    Funkce počítá krajní body pro jednotlivé sektory.
+    :param sector: Sektor, pro který se má funkce počítat
+    :param le: Levý okraj vnějšího bboxu
+    :param re: Pravý okraj vnějšího bboxu
+    :param be: Dolní okraj vnějšího bboxu
+    :param te: Horní okraj vnějšího bboxu
+    :return: množina krajních bodů sektoru (left,right,bottom,top)
+    """
     if sector == 'A':
         S_le=le
         S_re=(le+re)/2
@@ -59,8 +64,14 @@ def sector_edges(sector,le,re,be,te):
 
 def sectors(soubor,sec,le,re,be,te):
     """
-    Funkce přiřadí bodům do properties atribut cluster_id podle too v jakém sektoru se nachází
-    :param soubor:nahraná data z geoJSON
+    Funkce přiřadí bodům do properties atribut cluster_id podle toho v jakém sektoru se nachází.
+    funkce je rekurzivní a provádí přiřazování, dokud je v nějakém sektoru více než padesát bodů
+    :param soubor: nahraná data z GeJSON, která jsou editována
+    :param sec: N-tice, která obsahuje umístění features v souboru
+    :param le: levý okraj bboxu
+    :param re: pravý okraj bboxu
+    :param be: dolní okraj bboxu
+    :param te: horní okraj bboxu
     :return:
     """
     sectorA=[]
@@ -109,10 +120,17 @@ def sectors(soubor,sec,le,re,be,te):
 
 @click.command()
 @click.argument('input', type=click.File('rb'))
-@click.argument('output', default='output.geojson')
+@click.argument('output_name', default='output.geojson')
 
-def run(input,output):
-    if '.geojson' not in output:
+def run(input,output_name):
+    """
+    Funkce přebírající argumenty získané pomocí modulu Click,
+    volající další funkce a provádějící zbylé operace v programu.
+    :param input: vstupní spoubor GeoJSON
+    :param output_name: název výstpního souboru
+    :return:
+    """
+    if '.geojson' not in output_name:
         print('Error: Output file was not set as geoJSON')
         exit(2)
     try:
@@ -128,14 +146,9 @@ def run(input,output):
     e = edges(soubor)
     sectors(soubor, sec, e[0], e[1], e[2], e[3])
 
-    with open(output, mode='w', encoding='UTF-8') as f:
+    with open(output_name, mode='w', encoding='UTF-8') as f:
         json.dump(soubor, f)
-
 
 #if __name__ == '__main__':
 run()
 
-
-
-# with open('restaurant_pokus3.geojson', mode = 'w',encoding='UTF-8') as f:
-#     json.dump(soubor,f)
