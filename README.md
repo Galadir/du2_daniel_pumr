@@ -1,4 +1,4 @@
-# Úkol 2: Dělení adresních bodů
+# Dělení adresních bodů
 Tento progra byl vytvořen v rámci domácího úkolu pro předmět Úvod do programování na Přírodovědecké fakultě Univerzity
 Karlovy. Do zadání úkolu je možné nahlédnout zde:
 https://github.com/xtompok/uvod-do-prg/tree/master/du2 
